@@ -2,8 +2,8 @@
 {% load static %}
 {% block body %}
 <h1 align="center">REGISTRATION FORM</h1>
-<div id="11" class="container" align="center">
-    <form method="POST">
+<div class="div1" align="center">
+    <form method="POST" >
         {% csrf_token %}
         {{form.as_p}}
     <input style="background-color: aquamarine; color:black" type="Submit" class="btn btn primary" name="" value="Submit" >
