@@ -1,7 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from demo1.models import ModelStudent
 from demo1 import forms2,forms1
 from django.http import HttpResponse
+from django.contrib import messages
+from django.conf import settings
+from django.core.mail import send_mail
+#from django.contrib.auth.models import User
+
 # Create your views here.
 
 def stud(request):
@@ -11,6 +16,12 @@ def stud(request):
         if form.is_valid():
             form.save()
             form=forms2.studentFeom()
+            subject = 'welcome to Softs world'
+            message = 'Hi, thank you for registering in softs.\n Your pasword is in the form:\n last 4 characters of your name+regid+phone_num'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list =[request.POST['email'],]
+            send_mail( subject, message, email_from, recipient_list )
+
     return render(request,'demo2.html',{'form':form})
 def home(request):
     a='HOW ARE YOU. For further information please Register'
@@ -29,10 +40,14 @@ def sign(request):
             if l:
                 #for i in l:
                     #if g in i:
-                if  p==l[0][1][-4::]+l[0][-1]:
+                if  p==l[0][1][-4::]+l[0][0]+l[0][-1]:
                     return render(request,'r.html',{'l':list(ModelStudent.objects.all().values().filter(name=g))})
-                return HttpResponse('<h1>Invalid password</h1>')
-            return HttpResponse('<h1>Invalid user name</h1>')
+                else:
+                    messages.success(request, 'Invalid Password!')
+                    return redirect('/signin/')
+            else:    #return HttpResponse('<h1>Invalid password</h1>')
+                messages.success(request, 'Invalid Username!')
+                return redirect('/signin/')
         
     return render(request,'signin.html',{'form':form})
 
